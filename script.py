@@ -39,7 +39,7 @@ device = "cpu"
 for epoch in range(epochs if epochs else Config.EPOCHS):
     # try:
     model, train_loss, train_acc = train_fn(train_dataloader, model, optimizer, device, scheduler)
-    val_loss, val_acc = val_fn(val_dataloader, model, optimizer, device, scheduler)
+    val_loss, val_acc = val_fn(val_dataloader, model, device)
     print("------------------------------------------------------------")
     print(f"Epoch: {epoch+1}")
     print(f"Train_loss: {train_loss}, Val_loss: {val_loss}")
