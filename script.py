@@ -13,12 +13,16 @@ parser = argparse.ArgumentParser(
 parser.add_argument("--epochs", default=2)
 parser.add_argument("--saved_model_name", default=None)
 parser.add_argument("--ff", default=True, help="Full Finetuning or not")
+parser.add_argument("--base_model", 
+                    default="bert-base-uncased",
+                    help="Model name from huggingface") # l3cube-pune/hindi-bert-scratch
 
 args = parser.parse_args()
 
 epochs = int(args.epochs)
 saved_model_name = args.saved_model_name
 ff = args.ff
+base_model_name = args.base_model
 
 print(args)
 
@@ -27,11 +31,11 @@ with open("./le.pkl", "rb") as f:
 
 train_dataloader, val_dataloader = get_dataloaders(["./bmmnerdataset/Bhojpuri_ner.remove[1].train",
                  "./bmmnerdataset/Magahi_ner[1].train",
-                 "./bmmnerdataset/Maithili_ner[1].train"], sample_size=50)
+                 "./bmmnerdataset/Maithili_ner[1].train"], sample_size=50, tokenizer=base_model_name)
 print("Data loaded")
 
 # model = NERBertModel(num_tag=45)
-model = BiLSTMBert(num_tag=45, hidden_dim=768, lstm_layers=2)
+model = BiLSTMBert(num_tag=45, hidden_dim=768, lstm_layers=2, model_name=base_model_name)
 print("Model initialized")
 optimizer, scheduler = get_optimizer_scheduler(model, len(train_dataloader), ff)
 print("Optimizer and scheduler initialized")

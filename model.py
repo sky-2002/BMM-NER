@@ -4,10 +4,11 @@ from transformers import BertModel
 
 class NERBertModel(nn.Module):
     
-    def __init__(self, num_tag, class_weights=None):
+    def __init__(self, num_tag, model_name=None, class_weights=None):
         super(NERBertModel, self).__init__()
         self.num_tag = num_tag
-        self.bert = BertModel.from_pretrained('bert-base-uncased')
+        self.model_name = model_name if model_name else 'bert-base-uncased'
+        self.bert = BertModel.from_pretrained(self.model_name)
         self.bert_drop = nn.Dropout(0.3)
         self.out_tag = nn.Linear(768, self.num_tag)
         self.class_weights = class_weights if class_weights else None
@@ -53,10 +54,11 @@ class NERBertModel(nn.Module):
         return optimizer_grouped_parameters
     
 class BiLSTMBert(nn.Module):
-    def __init__(self, num_tag, hidden_dim=768, lstm_layers=1, class_weights=None) -> None:
+    def __init__(self, num_tag, model_name=None, hidden_dim=768, lstm_layers=1, class_weights=None) -> None:
         super(BiLSTMBert, self).__init__()
         self.num_tag = num_tag
-        self.bert = BertModel.from_pretrained('bert-base-uncased')
+        self.model_name = model_name if model_name else 'bert-base-uncased'
+        self.bert = BertModel.from_pretrained(self.model_name)
         self.bert_drop = nn.Dropout(0.3)
 
         self.bilstm = nn.LSTM(
