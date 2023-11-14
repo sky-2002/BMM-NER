@@ -12,11 +12,13 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("--epochs", default=2)
 parser.add_argument("--saved_model_name", default=None)
+parser.add_argument("--ff", default=True, help="Full Finetuning or not")
 
 args = parser.parse_args()
 
 epochs = int(args.epochs)
 saved_model_name = args.saved_model_name
+ff = args.ff
 
 print(args)
 
@@ -31,7 +33,7 @@ print("Data loaded")
 # model = NERBertModel(num_tag=45)
 model = BiLSTMBert(num_tag=45, hidden_dim=768, lstm_layers=2)
 print("Model initialized")
-optimizer, scheduler = get_optimizer_scheduler(model, len(train_dataloader))
+optimizer, scheduler = get_optimizer_scheduler(model, len(train_dataloader), ff)
 print("Optimizer and scheduler initialized")
 
 

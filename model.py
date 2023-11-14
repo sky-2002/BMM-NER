@@ -26,6 +26,32 @@ class NERBertModel(nn.Module):
         loss = Critirion_Loss(active_logits, active_labels)
         return tag, loss
     
+    #Function for getparameters
+    def _get_hyperparameters(self, ff):
+        # ff: full_finetuning
+        if ff:
+            param_optimizer = list(self.named_parameters())
+            no_decay = ["bias", "gamma", "beta"]
+            optimizer_grouped_parameters = [
+                {
+                    "params": [
+                        p for n, p in param_optimizer if not any(nd in n for nd in no_decay)
+                    ],
+                    "weight_decay_rate": 0.01,
+                },
+                {
+                    "params": [
+                        p for n, p in param_optimizer if any(nd in n for nd in no_decay)
+                    ],
+                    "weight_decay_rate": 0.0,
+                },
+            ]
+        else:
+            param_optimizer = list(self.bert_drop.named_parameters()) + list(self.out_tag.named_parameters())
+            optimizer_grouped_parameters = [{"params": [p for n, p in param_optimizer]}]
+
+        return optimizer_grouped_parameters
+    
 class BiLSTMBert(nn.Module):
     def __init__(self, num_tag, hidden_dim=768, lstm_layers=1, class_weights=None) -> None:
         super(BiLSTMBert, self).__init__()
@@ -57,3 +83,30 @@ class BiLSTMBert(nn.Module):
         # print(active_logits.shape, active_labels.shape)
         loss = Critirion_Loss(active_logits, active_labels)
         return tag, loss
+    
+    #Function for getparameters
+    def _get_hyperparameters(self, ff):
+        # ff: full_finetuning
+        if ff:
+            param_optimizer = list(self.named_parameters())
+            no_decay = ["bias", "gamma", "beta"]
+            optimizer_grouped_parameters = [
+                {
+                    "params": [
+                        p for n, p in param_optimizer if not any(nd in n for nd in no_decay)
+                    ],
+                    "weight_decay_rate": 0.01,
+                },
+                {
+                    "params": [
+                        p for n, p in param_optimizer if any(nd in n for nd in no_decay)
+                    ],
+                    "weight_decay_rate": 0.0,
+                },
+            ]
+        else:
+            param_optimizer = list(self.bert_drop.named_parameters())
+            + list(self.bilstm.named_parameters()) + list(self.out_tag.named_parameters())
+            optimizer_grouped_parameters = [{"params": [p for n, p in param_optimizer]}]
+
+        return optimizer_grouped_parameters

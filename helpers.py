@@ -6,7 +6,7 @@ from config import Config
 from sklearn.metrics import accuracy_score, f1_score
 from transformers import get_linear_schedule_with_warmup
 
-FULL_FINETUNING = True
+FULL_FINETUNING = False
 
 def df_for_ner(file_paths, le):
     sentences = []
@@ -106,8 +106,8 @@ def _get_hyperparameters(model, ff):
 
     return optimizer_grouped_parameters
 
-def get_optimizer_scheduler(model, num_train_samples):
-    optimizer_grouped_parameters = _get_hyperparameters(model, FULL_FINETUNING)
+def get_optimizer_scheduler(model, num_train_samples, ff):
+    optimizer_grouped_parameters = model._get_hyperparameters(ff if ff else FULL_FINETUNING)
     optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=3e-5)
 
     num_train_steps = int(num_train_samples / Config.TRAIN_BATCH_SIZE * Config.EPOCHS)
