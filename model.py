@@ -107,8 +107,10 @@ class BiLSTMBert(nn.Module):
                 },
             ]
         else:
-            param_optimizer = list(self.bert_drop.named_parameters())
-            + list(self.bilstm.named_parameters()).extend(list(self.out_tag.named_parameters()))
+            param_optimizer = list(self.bert_drop.named_parameters()).extend(
+                list(self.bilstm.named_parameters())
+            )
+            param_optimizer.extend(list(self.out_tag.named_parameters()))
             optimizer_grouped_parameters = [{"params": [p for n, p in param_optimizer]}]
 
         return optimizer_grouped_parameters
