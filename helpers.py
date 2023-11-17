@@ -48,7 +48,7 @@ def train_fn(train_data_loader, model, optimizer, device, scheduler):
 
         preds = torch.argmax(torch.softmax(tag, dim=0), dim=-1).flatten()
         targets = data['target_tags'].flatten()
-        acc_ += accuracy_score(targets, preds)
+        acc_ += accuracy_score(targets.cpu(), preds.cpu())
 
         loss.backward()
         optimizer.step()
