@@ -48,7 +48,7 @@ def train_fn(train_data_loader, model, optimizer, device, scheduler):
 
         preds = torch.argmax(torch.softmax(tag, dim=0), dim=-1).flatten()
         targets = data['target_tags'].flatten()
-        acc_ += accuracy_score(targets.cpu(), preds.cpu())
+        acc_ += accuracy_score(targets.cpu().data.numpy(), preds.cpu().data.numpy())
 
         loss.backward()
         optimizer.step()
@@ -68,7 +68,7 @@ def val_fn(val_data_loader, model, device, test=False):
         tag, loss = model(**data)
         preds = torch.argmax(torch.softmax(tag, dim=0), dim=-1).flatten()
         targets = data['target_tags'].flatten()
-        acc_ += accuracy_score(targets.cpu(), preds.cpu())
+        acc_ += accuracy_score(targets.cpu().data.numpy(), preds.cpu().data.numpy())
 
         if test:
             f1_ += f1_score(targets, preds, average="weighted")
