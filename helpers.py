@@ -106,11 +106,11 @@ def _get_hyperparameters(model, ff):
 
     return optimizer_grouped_parameters
 
-def get_optimizer_scheduler(model, num_train_samples, ff):
+def get_optimizer_scheduler(model, num_train_samples, epochs, train_batch_size, ff, lr=0.01, ):
     optimizer_grouped_parameters = model._get_hyperparameters(ff if ff else FULL_FINETUNING)
-    optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=3e-5)
+    optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=lr)
 
-    num_train_steps = int(num_train_samples / Config.TRAIN_BATCH_SIZE * Config.EPOCHS)
+    num_train_steps = int(num_train_samples / train_batch_size * epochs)
 
     scheduler = get_linear_schedule_with_warmup(
         optimizer, 
