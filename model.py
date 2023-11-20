@@ -71,7 +71,8 @@ class BiLSTMBert(nn.Module):
         self.class_weights = class_weights if class_weights else None
 
     def forward(self, ids, mask, token_type_ids, target_tags):
-        output, _ = self.bert(ids, attention_mask=mask, token_type_ids=token_type_ids, return_dict=False)
+        # output, _ = self.bert(ids, attention_mask=mask, token_type_ids=token_type_ids, return_dict=False)
+        output = self.bert.embeddings.word_embeddings(ids)
         bert_out = self.bert_drop(output) 
 
         lstm_out, _ = self.bilstm(bert_out)
