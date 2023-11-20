@@ -16,6 +16,7 @@ parser.add_argument("--ff", default=True, help="Full Finetuning or not")
 parser.add_argument("--base_model", 
                     default="bert-base-uncased",
                     help="Model name from huggingface") # l3cube-pune/hindi-bert-scratch
+parser.add_argument("--device", help="Device to use", default="cpu")
 
 args = parser.parse_args()
 
@@ -23,6 +24,7 @@ epochs = int(args.epochs)
 saved_model_name = args.saved_model_name
 ff = args.ff
 base_model_name = args.base_model
+device = args.device
 
 print(args)
 
@@ -41,7 +43,7 @@ optimizer, scheduler = get_optimizer_scheduler(model, len(train_dataloader), ff)
 print("Optimizer and scheduler initialized")
 
 
-device = "cpu"
+device = device if device else "cpu"
 for epoch in range(epochs if epochs else Config.EPOCHS):
     # try:
     model, train_loss, train_acc = train_fn(train_dataloader, model, optimizer, device, scheduler)
